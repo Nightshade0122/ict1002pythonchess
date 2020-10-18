@@ -1,6 +1,8 @@
 import chess.pgn
 import time
 from chessboard import display
+from PyQt5 import QtGui, QtSvg, QtWidgets
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
 
 def GUI(game):                              #Opens the GUI to run the game
         for move in game.mainline_moves():
@@ -10,6 +12,7 @@ def GUI(game):                              #Opens the GUI to run the game
                 f = open("Board.svg", "w")
                 f.write(boardsvg)
                 f.close()
+        app = QtWidgets.QApplication(sys.argv)
         window = QWidget()
         layout = QVBoxLayout()
         layout.addWidget(QtSvg.QSvgWidget('Board.svg'))
