@@ -63,7 +63,7 @@ def enter_search():
 def save_pgn(pgn,file_name):
     curr_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(curr_path, file_name)
-    with open(file_name, "w") as f:
+    with open(file_path, "w") as f:
         for game in pgn:
             f.write(str(game)+"\n\n")
 
