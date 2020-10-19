@@ -60,5 +60,13 @@ def enter_search():
                 print()
     return search_criteria
 
+def save_pgn(pgn,file_name):
+    curr_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(curr_path, file_name)
+    with open(file_name, "w") as f:
+        for game in pgn:
+            f.write(str(game)+"\n\n")
+
 #pgn = open("lichess_db_standard_rated_2013-01.pgn")
 #newpgn = query_database(pgn,enter_search())
+#save_pgn(newpgn,"Filtered Games.pgn")
