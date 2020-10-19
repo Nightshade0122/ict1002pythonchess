@@ -5,7 +5,6 @@ import chess.pgn
 #Search through database using a criteria, search_criteria is a dict
 def query_database(pgn, search_criteria):
     newpgn = []
-    print("Hello world!")
     #Below are search criteria that can be a range
     range_search=["Date","BlackElo","WhiteElo","BlackRatingDiff","WhiteRatingDiff","UTCDate","UTCTime"]
     while True:                                     #Loop through all the games
