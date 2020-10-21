@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHB
 
 def writefile(board):
     boardsvg = chess.svg.board(board=board)
-    f = open("Board.svg", "w")
+    f = open("Images/Board.svg", "w")
     f.write(boardsvg)
     f.close()
 
@@ -18,7 +18,7 @@ def next_button_clicked(event):
         board.push(move_list[i])
         writefile(board)
         i += 1
-        board_widget.load("board.svg")
+        board_widget.load("Images/board.svg")
     else:
         pass
 
@@ -29,7 +29,7 @@ def previous_button_clicked(event):
         i -= 1
         board.pop()
         writefile(board)
-        board_widget.load("board.svg")
+        board_widget.load("Images/board.svg")
     else:
         pass
 
@@ -71,18 +71,18 @@ if __name__ == '__main__':
     header = tableWidget.horizontalHeader()
     header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
     set_table_content(move_list)
-    board_widget = QtSvg.QSvgWidget('Board.svg')
+    board_widget = QtSvg.QSvgWidget('Images/Board.svg')
 
     upper_section.addWidget(board_widget)
     upper_section.addWidget(tableWidget)
 
     previous_button = QPushButton()
     previous_button.setToolTip("Previous move")
-    previous_button.setIcon(QtGui.QIcon("left-arrow.png"))
+    previous_button.setIcon(QtGui.QIcon("Images/left-arrow.png"))
     previous_button.clicked.connect(previous_button_clicked)
     next_button = QPushButton()
     next_button.setToolTip("Next move")
-    next_button.setIcon(QtGui.QIcon("right-arrow.png"))
+    next_button.setIcon(QtGui.QIcon("Images/right-arrow.png"))
     next_button.clicked.connect(next_button_clicked)
 
     lower_section.addWidget(previous_button)
