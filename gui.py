@@ -76,9 +76,13 @@ if __name__ == '__main__':
     upper_section.addWidget(board_widget)
     upper_section.addWidget(tableWidget)
 
-    previous_button = QPushButton('Previous')
+    previous_button = QPushButton()
+    previous_button.setToolTip("Previous move")
+    previous_button.setIcon(QtGui.QIcon("left-arrow.png"))
     previous_button.clicked.connect(previous_button_clicked)
-    next_button = QPushButton('Next')
+    next_button = QPushButton()
+    next_button.setToolTip("Next move")
+    next_button.setIcon(QtGui.QIcon("right-arrow.png"))
     next_button.clicked.connect(next_button_clicked)
 
     lower_section.addWidget(previous_button)
