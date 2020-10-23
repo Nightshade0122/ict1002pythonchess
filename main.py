@@ -4,8 +4,9 @@ from os.path import join
 import chess
 import chess.pgn
 import chess.svg
-#import evaluate
-#import search
+import evaluate
+import search
+import create_game
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
@@ -53,13 +54,38 @@ def command_line_board(game, FEN=False):        #Showing the game moves in comma
     except:
         return False                            #Game could not be displayed in command-line
 
-#Search through database using a criteria
-def query_database(pgn, searchcriteria, searchvalue): 
-    newpgn = Null                               #Search value
-    return newpgn
+def main():
+    chessdatabase = "database"                  #Name of directory containing all databases
+    databaselist = read_database(chessdatabase) #Creates list of I/O wrappers for all databases listed
+    print("Initialization complete!")
+    print(databaselist)
+    
+    while True:
+        print()
+        print("Please select from the options:")
+        print("search, creategame, analytics, machinelearning")
+        enterinput = input()
+        if enterinput in "search":             #Search option selected
+            searchcriteria = search.enter_search()
+            for i in range(len(databaselist)):
+                search.query_database(database_games(databaselist[i]))
+                #Show the first game found in GUI
+            break
+        elif enterinput in "creategame":
+            create_game.create_game() #Allow the user to paste game's PGN via commandline or make moves via PGN notation
+            break
+        elif enterinput in "analytics":
+            #Ask user for what data analytics to be displayed
+            #Analytics to be showed in graphs
+            break
+        elif enterinput in "machinelearning":
+            #Ask the user for engine and training dataset to use
+            #Training dataset given must be a database of stronger players
+            break
+        else:
+            print("Invalid input")
 
+if __name__ == "__main__":
+    main()
 
-chessdatabase = "database"                      #Name of directory containing all databases
-databaselist = read_database(chessdatabase)     #Creates list of I/O wrappers for all databases listed
 #database_games(databaselist[0])                #Prints all the game PGNs in the database
-
