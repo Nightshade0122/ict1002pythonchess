@@ -1,6 +1,7 @@
 import chess.pgn
 import chess.svg
 import sys
+import qdarkstyle
 from lib.PyQt5 import QtSvg, QtGui
 from lib.PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
 
@@ -48,17 +49,15 @@ def set_table_content(move_list):    #set all the moves into the table
         count += 1
 
 
-if __name__ == '__main__':
-    global i
+def gui(game):
+    global i, board_widget, tableWidget, board, move_list
     i = 0
-    pgn = open("lichess_db_standard_rated_2013-01.pgn")
-    game = chess.pgn.read_game(pgn)
     board = game.board()
     writefile(board)
     move_list = generate_move_list(game) 
 
     app = QApplication(sys.argv)    #initialise the pyqt application
-
+    app.setStyleSheet(qdarkstyle.load_stylesheet()) #load third party dark theme
     main_layout = QVBoxLayout()     #set main layout to have a Vertical layout
     upper_section = QHBoxLayout()   #set upper section to have a Horizontal layout
     lower_section = QHBoxLayout()
@@ -94,5 +93,10 @@ if __name__ == '__main__':
     window.setWindowTitle("Chess Board")       #set the window title
     window.show()                               #show main window widget
     sys.exit(app.exec_())
+    
+    
+#pgn = open("lichess_db_standard_rated_2013-01.pgn")
+#game = chess.pgn.read_game(pgn)
+#gui(game)
 
 
