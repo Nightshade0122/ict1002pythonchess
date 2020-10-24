@@ -75,7 +75,7 @@ def main():
                 pgnresult += search.query_database(databaselist[i],searchcriteria)  #Store filtered results
                 if showfirstgame:              #Show the first game found in GUI
                     showfirstgame = False
-                    gui(pgnresult[0]))
+                    gui(pgnresult[0])
             break
         elif enterinput in "creategame":
             create_game.create_game() #Allow the user to paste game's PGN via commandline or make moves via PGN notation
