@@ -2,8 +2,8 @@ import chess.pgn
 import chess.svg
 import sys
 import qdarkstyle
-from lib.PyQt5 import QtSvg, QtGui
-from lib.PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
+from PyQt5 import QtSvg, QtGui
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
 
 
 def writefile(board):   #Convert svg from chess library to a svg file
