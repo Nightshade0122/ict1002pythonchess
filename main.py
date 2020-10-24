@@ -7,6 +7,7 @@ import chess.svg
 import evaluate
 import search
 import create_game
+import gui
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
@@ -66,10 +67,15 @@ def main():
         print("search, creategame, analytics, machinelearning")
         enterinput = input()
         if enterinput in "search":             #Search option selected
-            searchcriteria = search.enter_search()
+            searchcriteria = search.enter_search()      #Asks user for search criteria
+            showfirstgame = True
+            pgnresult = []
+            print("Please wait, searching through database...")
             for i in range(len(databaselist)):
-                search.query_database(database_games(databaselist[i]))
-                #Show the first game found in GUI
+                pgnresult += search.query_database(databaselist[i],searchcriteria)  #Store filtered results
+                if showfirstgame:              #Show the first game found in GUI
+                    showfirstgame = False
+                    gui(pgnresult[0]))
             break
         elif enterinput in "creategame":
             create_game.create_game() #Allow the user to paste game's PGN via commandline or make moves via PGN notation
