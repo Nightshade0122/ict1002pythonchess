@@ -2,8 +2,10 @@ import chess.pgn
 import chess.svg
 import sys
 import qdarkstyle
-from PyQt5 import QtSvg, QtGui
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
+import evaluate
+import copy
+from PyQt5 import QtSvg, QtGui, QtCore
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QAbstractScrollArea
 
 
 def writefile(board):   #Convert svg from chess library to a svg file
@@ -35,26 +37,35 @@ def previous_button_clicked(event): #undo the move if the previous button is pre
         pass
 
 
-def generate_move_list(game):   #generate a list of all moves
-    move_list = []
-    for move in game.mainline_moves():
+def generate_move_and_eval_list(game):   #generate a list of all moves
+   move_list = []
+   evaluation_list = []
+   temp_board = copy.copy(board)
+   for move in game.mainline_moves():
         move_list.append(move)
-    return move_list
+        temp_board.push(move)
+        evaluation_list.append(str(evaluate.evaluate(temp_board.fen())))
+   return move_list, evaluation_list
 
 
-def set_table_content(move_list):    #set all the moves into the table 
+def set_table_content(move_list, evaluation_list):    #set all the moves into the table 
     count = 0
-    for move in move_list:
-        tableWidget.setItem(count, 0, QTableWidgetItem("Move.from_uci(" + str(move) + ")"))
+    for move, evaluation in zip(move_list, evaluation_list):
+        move_item = QTableWidgetItem(str(move))
+        tableWidget.setItem(count, 0, move_item)
+        eval_item = QTableWidgetItem(evaluation)
+        tableWidget.setItem(count, 1, eval_item)
+        move_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        eval_item.setTextAlignment(QtCore.Qt.AlignCenter)
         count += 1
 
 
 def gui(game):
-    global i, board_widget, tableWidget, board, move_list
+    global i, board_widget, tableWidget, board, move_list, evaluation_list
     i = 0
     board = game.board()
     writefile(board)
-    move_list = generate_move_list(game) 
+    move_list, evaluation_list = generate_move_and_eval_list(game) 
 
     app = QApplication(sys.argv)    #initialise the pyqt application
     app.setStyleSheet(qdarkstyle.load_stylesheet()) #load third party dark theme
@@ -63,15 +74,19 @@ def gui(game):
     lower_section = QHBoxLayout()
 
     window = QWidget()  #initialise main window widget
+    
     tableWidget = QTableWidget()    #initialise table widget
     tableWidget.setRowCount(len(move_list)) #set the no of rows for the table
-    tableWidget.setColumnCount(1)   #set the no of columns for the table
-    tableWidget.setHorizontalHeaderLabels(["Chess Moves"]) #set column name for the table
-    header = tableWidget.horizontalHeader()
-    header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  #resize column to fit the content perfectly
-    set_table_content(move_list)     #set table content using the move list generated
+    tableWidget.setColumnCount(2)   #set the no of columns for the table
+    tableWidget.setHorizontalHeaderLabels(["Chess Moves", "Evaluation"]) #set column name for the table
+    tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents) #set table size to fit the content perfectly
+    set_table_content(move_list, evaluation_list)     #set table content using the move list generated
+    tableWidget.resizeColumnsToContents() 
+    
     board_widget = QtSvg.QSvgWidget('Images/Board.svg')    #initialise board widget
-
+    board_widget.setFixedWidth(460)
+    board_widget.setFixedHeight(460)
+    
     upper_section.addWidget(board_widget)   #add the widgets to the upper section
     upper_section.addWidget(tableWidget)
 
