@@ -38,59 +38,65 @@ def evaluate(boardFEN, turn='0', time=5000, enginename="stockfish"):   #Evaluate
     board = chess.Board(boardFEN)
     
     if engine_name(enginename) is None: #Name of the engine was undefined
-        return False
+        return False #Returns False when error
     try:
         engine = chess.engine.SimpleEngine.popen_uci(engine_name(enginename)) #Opens the engine
-        #info = engine.analyse(board, chess.engine.Limit(time=time)) #Sets the time given to engine for evaluation
-        info = engine.analyse(board, chess.engine.Limit(depth=20))
+        info = engine.analyse(board, chess.engine.Limit(time=time)) #Sets the time given to engine for evaluation
+        
     except:
         print("No engine found!")
-        return False
+        return False #Returns False when error
 
     if board.is_stalemate() or board.is_insufficient_material() or board.is_game_over(): #If it is impossible for the engine to make any meaningful progress
-        return None
-
-    board_states = []                   #List of every board state in FEN during this mate
-    board_states.append(boardFEN)
-
-    game = chess.pgn.Game()
-    game.setup(boardFEN)
+        return None #Returns None because it is not possible to create any meaningful progress
     
-    if(info["score"].is_mate()): #Check if engine found mate
-        #If engine finds mate, show the user the best mate found by the engine
-        x = 0
-        for i in info["pv"]:                    #Loop through every move and add them to the lists
-            if x == 0:
-                node = game.add_main_variation(i) #If first loop, create the main line found by engine
-                x = x + 1 
-            else:
-                node = node.add_main_variation(i) #Add to the main line if not first loop
-            board.push(i)
-            board_states.append(board.fen())        #Add the FEN board state after the move was made
-        
+    if(info["score"].is_mate()):                #Check if engine found mate
         centipawn = info["score"]
         engine.quit()
-        print(game)
-        return [centipawn, game]                    #If mate is found, returns the game as well
+        return centipawn                    #If mate is found, returns the game as well
     else: #No mate found
         centipawn = (info["score"].white().score())/100 #To get the centipawn value
     engine.quit()
     return centipawn
     
-def best_moves(boardFEN, moves = 3):
-    #List of the top few moves 
-    return 0
+def find_mate(boardFEN): #Should only be used if mate is possible
+    board = chess.Board(boardFEN)
+    engine = chess.engine.SimpleEngine.popen_uci(engine_name("stockfish"))
+    info = engine.analyse(board, chess.engine.Limit(depth=20)) #Limit the possible checkmate found to be under 20 moves
+    
+    board_states = []                   #List of every board state in FEN notation during mate
+    board_states.append(boardFEN)
+
+    game = chess.pgn.Game()
+    game.setup(boardFEN)
+    x = 0
+    if not (info["score"].is_mate()):
+        engine.quit()
+        return None #The score given is not a mate, therefore, the function cannot return a mate. Therefore, it returns None
+    for i in info["pv"]:                    #Loop through every move and add them to the lists
+        if x == 0:
+            node = game.add_main_variation(i) #If first loop, create the main line found by engine
+            x = x + 1 
+        else:
+            node = node.add_main_variation(i) #Add to the main line if not first loop
+        board.push(i)
+        board_states.append(board.fen())        #Add the FEN board state after the move was made
+    engine.quit()
+    return game 
 
 #Board positions for testing
-board1 = "r1bqkbnr/p1pp1ppp/1pn5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 2 4"
-print(evaluate(board1))
-board2 = "B1N1q3/1P1p4/4P1p1/1RP1P1P1/8/BPp2p2/pP3P2/RNk1K3 w Q - 0 34"
-print(evaluate(board2))
-board3 = "5r2/8/1R6/ppk3p1/2N3P1/P4b2/1K6/5B2 w - - 0 1"            #Super hard puzzle, correct move is Rxb5+ !!
+#board1 = "r1bqkbnr/p1pp1ppp/1pn5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 2 4"
+#print(evaluate(board1))
+#print(find_mate(board1))
+#board2 = "B1N1q3/1P1p4/4P1p1/1RP1P1P1/8/BPp2p2/pP3P2/RNk1K3 w Q - 0 34"
+#print(evaluate(board2))
+#print(find_mate(board2))
+#board3 = "5r2/8/1R6/ppk3p1/2N3P1/P4b2/1K6/5B2 w - - 0 1"            #Super hard puzzle, correct move is Rxb5+ !!
 #print(evaluate(board3))
-board4 = "5rk1/pp1b2p1/4p2p/3p2p1/3P4/1P2P3/P3nPPP/R1R3K1 w - - 2 25"
+#print(get_mate(board3))
+#board4 = "5rk1/pp1b2p1/4p2p/3p2p1/3P4/1P2P3/P3nPPP/R1R3K1 w - - 2 25"
 #print(evaluate(board4))
-board5 = "r2q1rk1/pppb1ppB/2nb1n2/3p2B1/3P4/2N1P3/PPQ2PPP/R3K1NR b KQ - 0 9"
+#board5 = "r2q1rk1/pppb1ppB/2nb1n2/3p2B1/3P4/2N1P3/PPQ2PPP/R3K1NR b KQ - 0 9"
 #print(evaluate(board5))
-board6 = "8/8/8/8/pr1R4/k7/8/2K5 w - - 0 100"
-print(evaluate(board6))
+#board6 = "8/8/8/8/pr1R4/k7/8/2K5 w - - 0 100"
+#print(evaluate(board6))
