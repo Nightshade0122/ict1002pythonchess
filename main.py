@@ -82,8 +82,7 @@ def main():
             create_game.create_game() #Allow the user to paste game's PGN via commandline or make moves via PGN notation
             break
         elif enterinput in "analytics":
-            #Ask user for what data analytics to be displayed
-            #Analytics to be showed in graphs
+            analytics.graphTypes(pgnresult)
             break
         elif enterinput in "machinelearning":
             #Ask the user for engine and training dataset to use
