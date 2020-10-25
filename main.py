@@ -8,6 +8,7 @@ import evaluate
 import search
 import create_game
 import gui
+import analytics
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
