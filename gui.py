@@ -18,7 +18,7 @@ def writefile(board):   #Convert svg from chess library to a svg file
 def next_button_clicked(event): #move the piece if the next button is pressed
     global i
     if i < len(move_list):  #if counter i is less than the length of move_list, move the piece and create the svg file
-        board.push(move_list[i])
+        board.push(board.parse_san(move_list[i]))
         writefile(board)
         i += 1
         board_widget.load("Images/board.svg")   #Refresh the board widget
@@ -42,7 +42,7 @@ def generate_move_and_eval_list(game):   #generate a list of all moves
    evaluation_list = []
    temp_board = copy.copy(board)
    for move in game.mainline_moves():
-        move_list.append(move)
+        move_list.append(temp_board.san(move))
         temp_board.push(move)
         evaluation_list.append(str(evaluate.evaluate(temp_board.fen())))
    return move_list, evaluation_list
@@ -110,8 +110,8 @@ def gui(game):
     sys.exit(app.exec_())
     
     
-#pgn = open("lichess_db_standard_rated_2013-01.pgn")
-#game = chess.pgn.read_game(pgn)
-#gui(game)
+pgn = open("database/lichess_db_standard_rated_2013-01.pgn")
+game = chess.pgn.read_game(pgn)
+gui(game)
 
 
