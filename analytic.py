@@ -72,10 +72,6 @@ def getTimeControl(pgnlist):
         timeControl[i] = timelist.count(i) #Append data to dictionary with value of its count.
     return timeControl
 
-def winRateOpening(pgnlist):
-    '''Get the data of wins base on the opening used'''
-    
-    return 0
 
 def terminationType(pgnlist):
     '''Get the data for different termination types'''
