@@ -20,7 +20,7 @@ def engine_name(engine):
     except: #Engine was not found
         return None
 
-def evaluate(boardFEN, time=5000, enginename="leela"):   #Evaluates the board state, default White
+def evaluate(boardFEN, time=5000, enginename="stockfish"):   #Evaluates the board state, default White
     #'time' determines the time engine spends thinking in milliseconds (default: 500ms = 0.5s)
     #'engine' determines the name of engine to be used (default: 100ms)
 
@@ -28,7 +28,6 @@ def evaluate(boardFEN, time=5000, enginename="leela"):   #Evaluates the board st
     #The lower the return value the better it is for Black
     #Positive means good for White
     #Negative means good for Black
-
 
     time = time/1000                    #Calculate time in seconds
     board = chess.Board(boardFEN)
