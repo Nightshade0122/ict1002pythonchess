@@ -8,7 +8,7 @@ import chess.svg
 import evaluate
 import search
 import gui
-#import analytic
+import analytic
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
