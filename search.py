@@ -63,7 +63,7 @@ def enter_search():
 
 def save_pgn(pgn,file_name):
     curr_path = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(curr_path, file_name)
+    file_path = os.path.join(curr_path, "database/"+file_name)
     with open(file_path, "a+") as f:                 #Creates file if does not exist, appends to file if exists
         for game in pgn:
             f.write(str(game)+"\n\n")
