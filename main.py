@@ -132,6 +132,7 @@ def main():
                 if showfirstgame:              #Show an example game found in the GUI
                     showfirstgame = False
             search.save_pgn(pgnresult,"FilteredGames.pgn")
+            print("Export complete! Results are stored in database/FilteredGames.pgn")
             break
         elif enterinput in "2": #Create game
             try:
