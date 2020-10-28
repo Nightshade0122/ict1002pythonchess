@@ -5,6 +5,17 @@ import matplotlib.pyplot as plt
 import search
 import statistics
 
+def list(pgn):
+    '''Read one pgn file only'''
+    pgnlist=[]
+    while True:
+        game = chess.pgn.read_game(pgn)
+        if game is not None:
+            pgnlist.append(game)
+        else:
+            break
+    return pgnlist
+
 def getMovesCount(pgnlist):
     '''Get the chess moves in each game'''
     fulllist=[]
