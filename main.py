@@ -44,7 +44,7 @@ def command_line_board(game, FEN=False):        #Showing the game moves in comma
     #Used if GUI cannot be displayed
     if game is None: #Used to create a game via command line
         game = chess.pgn.Game()
-        while True:                             #Infinite loop to get the 
+        while True:                             #Infinite loop to get the
             userinput = input("Paste FEN or enter for default starting position:")
             if userinput == "":
                 board = chess.Board()           #Default starting chess position
@@ -63,12 +63,12 @@ def command_line_board(game, FEN=False):        #Showing the game moves in comma
         while True:
             #Show board state
             print("---------------")
-            print(board)                    
+            print(board)
             print("---------------")
             if board.is_stalemate():
                 print("Stalemate!")             #If game ends in stalemate
                 break
-            if board.is_game_over():             #If the game ends in any way (stalemate, checkmate, repetition, 
+            if board.is_game_over():             #If the game ends in any way (stalemate, checkmate, repetition,
                 print("Game over!")
                 break
 
@@ -84,8 +84,8 @@ def command_line_board(game, FEN=False):        #Showing the game moves in comma
             except ValueError:
                 print("Invalid move given!")
         return game
-            
-    
+
+
     try:
         board = game.board()                    #Starting board state is assigned
         counter = 1                             #To count the move numbers when printing to user
@@ -133,7 +133,7 @@ def main():
                     showfirstgame = False
                     try:
                         try:
-                            gui.gui(pgnresult[0])
+                            gui(pgnresult[0])
                         except:     #If GUI fails to display, use database_games to show every game in command-line
                             database_games(pgnresult[0], showpgn=False, cmdboard=True)
                     except IndexError:
