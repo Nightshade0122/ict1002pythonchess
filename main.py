@@ -96,7 +96,7 @@ def main():
             break
         elif enterinput in "analytics":
             pgnlist = analytic.getlist(databaselist)
-            analytics.graphTypes(pgnlist)
+            analytic.graphTypes(pgnlist)
             break
         else:
             print("Invalid input")
