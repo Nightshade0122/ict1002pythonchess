@@ -1,5 +1,6 @@
 import sys
 import os
+import io
 from os.path import join
 import chess
 import chess.pgn
@@ -7,7 +8,7 @@ import chess.svg
 import evaluate
 import search
 import gui
-import analytic
+#import analytic
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
@@ -41,6 +42,50 @@ def database_games(pgn, showpgn=False, cmdboard=False):     #Loop through all th
 def command_line_board(game, FEN=False):        #Showing the game moves in command line
     #'FEN' determines if FEN notation is printed along with board (default: False)
     #Used if GUI cannot be displayed
+    if game is None: #Used to create a game via command line
+        game = chess.pgn.Game()
+        while True:                             #Infinite loop to get the
+            userinput = input("Paste FEN or enter for default starting position:")
+            if userinput == "":
+                board = chess.Board()           #Default starting chess position
+                break
+            if userinput == "exit":             #Exit this function
+                return None
+            else:
+                try:
+                    board = chess.Board(userinput)  #User keys in FEN notation
+                    break
+                except:
+                    print("Invalid FEN!")
+        game.setup(board)                       #Add the board position to the game
+        x = 0
+        movelist = []
+        while True:
+            #Show board state
+            print("---------------")
+            print(board)
+            print("---------------")
+            if board.is_stalemate():
+                print("Stalemate!")             #If game ends in stalemate
+                break
+            if board.is_game_over():             #If the game ends in any way (stalemate, checkmate, repetition,
+                print("Game over!")
+                break
+
+            nextmove = input("Please key in the next move or undo:")
+            if nextmove == "undo":
+                board.pop()
+            try:
+                if x == 0:
+                    node = game.add_main_variation(board.push_san(nextmove))
+                    x = x + 1
+                else:
+                    node = node.add_main_variation(board.push_san(nextmove))
+            except ValueError:
+                print("Invalid move given!")
+        return game
+
+
     try:
         board = game.board()                    #Starting board state is assigned
         counter = 1                             #To count the move numbers when printing to user
@@ -75,34 +120,44 @@ def main():
     while True:
         print()
         print("Please select from the options:")
-        print("1. search \n2. create game \n3. analytics \n4. machinelearning\n")
+        print("1. Search \n2. Create game \n3. Analytics \n4. Display game\n5. Exit")
         enterinput = input()
-        if enterinput in "search":             #Search option selected
+        if enterinput in "1":             #Search option selected
             searchcriteria = search.enter_search()      #Asks user for search criteria
             showfirstgame = True
             pgnresult = []
             print("Please wait, searching through database...")
             for i in range(len(databaselist)):
                 pgnresult += search.query_database(databaselist[i],searchcriteria)  #Store filtered results
-                if showfirstgame:              #Show the first game found in GUI
+                if showfirstgame:              #Show an example game found in the GUI
                     showfirstgame = False
-                    try:
-                        try:
-                            gui(pgnresult[0])
-                        except:     #If GUI fails to display, use database_games to show every game in command-line
-                            database_games(pgnresult[0], showpgn=False, cmdboard=True)
-                    except IndexError:
-                        print("Search found no games within the database!")
+            search.save_pgn(pgnresult,"FilteredGames.pgn")
             break
-        elif enterinput in "analytics":
+        elif enterinput in "2": #Create game
+            try:
+                import gui_pgn
+            except:
+                command_line_board(None, False)
+        elif enterinput in "3":
             pgnlist = analytic.getlist(databaselist)
             analytic.graphTypes(pgnlist)
+            break
+        elif enterinput in "4":
+            try:
+                try:
+                    gui(pgnresult[0])
+                except:     #If GUI fails to display, use database_games to show every game in command-line
+                    database_games(pgnresult[0], showpgn=False, cmdboard=True)
+            except IndexError:
+                print("Search found no games within the database!")
+        elif enterinput in "5":
+            print("Exiting program")
             break
         else:
             print("Invalid input")
 
 #databaselist = read_database("database")
 #database_games(databaselist[0], showpgn=False, cmdboard=True)           #Prints all the game PGNs in the database
-
+#print(command_line_board(None, False))
 if __name__ == "__main__":
     main()
