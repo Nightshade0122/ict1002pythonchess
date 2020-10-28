@@ -133,7 +133,7 @@ def main():
                     showfirstgame = False
                     try:
                         try:
-                            gui(pgnresult[0])
+                            gui.gui(pgnresult[0])
                         except:     #If GUI fails to display, use database_games to show every game in command-line
                             database_games(pgnresult[0], showpgn=False, cmdboard=True)
                     except IndexError:
