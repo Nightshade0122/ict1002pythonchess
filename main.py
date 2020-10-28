@@ -146,9 +146,10 @@ def main():
         elif enterinput in "4":
             try:
                 try:
-                    gui(pgnresult[0])
+                    game = chess.pgn.read_game(databaselist[0])
+                    gui(game)
                 except:     #If GUI fails to display, use database_games to show every game in command-line
-                    database_games(pgnresult[0], showpgn=False, cmdboard=True)
+                    database_games(game, showpgn=False, cmdboard=True)
             except IndexError:
                 print("Search found no games within the database!")
         elif enterinput in "5":
