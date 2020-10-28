@@ -679,10 +679,12 @@ class Protocol(asyncio.SubprocessProtocol, metaclass=abc.ABCMeta):
             if fd == 1:
                 self.loop.call_soon(self._line_received, line)
             else:
-                self.loop.call_soon(self.error_line_received, line)
+                pass
+                #self.loop.call_soon(self.error_line_received, line)
 
-    def error_line_received(self, line: str) -> None:
-        LOGGER.warning("%s: stderr >> %s", self, line)
+
+    #def error_line_received(self, line: str) -> None:
+        #LOGGER.warning("%s: stderr >> %s", self, line)
 
     def _line_received(self: ProtocolT, line: str) -> None:
         LOGGER.debug("%s: >> %s", self, line)

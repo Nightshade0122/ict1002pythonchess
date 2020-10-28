@@ -6,9 +6,8 @@ import chess.pgn
 import chess.svg
 import evaluate
 import search
-import create_game
 import gui
-import analytics
+#import analytic
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
@@ -35,7 +34,7 @@ def database_games(pgn, showpgn=False, cmdboard=False):     #Loop through all th
                 total = total + 1
             else:
                 break                           #If no more games are found, break the loop and return
-        return total                            #Return total number of games found           
+        return total                            #Return total number of games found
     except:
         return 0                                #No games found due to an error
 
@@ -44,14 +43,26 @@ def command_line_board(game, FEN=False):        #Showing the game moves in comma
     #Used if GUI cannot be displayed
     try:
         board = game.board()                    #Starting board state is assigned
+        counter = 1                             #To count the move numbers when printing to user
         for move in game.mainline_moves():
+            if counter%2 == 1:
+                print("%d :" %(counter/2 + 1), end ='')
+                print("%s" %board.san(move)) #To signify that it is White's move and convert to PGN notation
+                counter = counter + 1
+            elif counter%2 == 0:
+                print("%d :... " %(counter/2), end ='')
+                print("%s" %board.san(move)) #To signify that it is Black's and convert to PGN notation
+                counter = counter + 1
+
             board.push(move)                    #Make next move in game
             if FEN:
                 print(board.fen())              #Show FEN notations with the board
             #Show board state
             print("---------------")
-            print(board)                    
+            print(board)
             print("---------------")
+            if input() == "":                   #Enter to show next move and board state
+                continue
         return board.fen()                      #Returns the final position of the game in FEN
     except:
         return False                            #Game could not be displayed in command-line
@@ -60,12 +71,11 @@ def main():
     chessdatabase = "database"                  #Name of directory containing all databases
     databaselist = read_database(chessdatabase) #Creates list of I/O wrappers for all databases listed
     print("Initialization complete!")
-    print(databaselist)
-    
+
     while True:
         print()
         print("Please select from the options:")
-        print("search, creategame, analytics, machinelearning")
+        print("1. search \n2. create game \n3. analytics \n4. machinelearning\n")
         enterinput = input()
         if enterinput in "search":             #Search option selected
             searchcriteria = search.enter_search()      #Asks user for search criteria
@@ -76,22 +86,22 @@ def main():
                 pgnresult += search.query_database(databaselist[i],searchcriteria)  #Store filtered results
                 if showfirstgame:              #Show the first game found in GUI
                     showfirstgame = False
-                    gui(pgnresult[0])
-            break
-        elif enterinput in "creategame":
-            create_game.create_game() #Allow the user to paste game's PGN via commandline or make moves via PGN notation
+                    try:
+                        try:
+                            gui(pgnresult[0])
+                        except:     #If GUI fails to display, use database_games to show every game in command-line
+                            database_games(pgnresult[0], showpgn=False, cmdboard=True)
+                    except IndexError:
+                        print("Search found no games within the database!")
             break
         elif enterinput in "analytics":
             analytics.graphTypes(pgnresult)
             break
-        elif enterinput in "machinelearning":
-            #Ask the user for engine and training dataset to use
-            #Training dataset given must be a database of stronger players
-            break
         else:
             print("Invalid input")
 
+#databaselist = read_database("database")
+#database_games(databaselist[0], showpgn=False, cmdboard=True)           #Prints all the game PGNs in the database
+
 if __name__ == "__main__":
     main()
-
-#database_games(databaselist[0])                #Prints all the game PGNs in the database

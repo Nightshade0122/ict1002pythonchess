@@ -10,6 +10,12 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QHB
 from PyQt5.QtCore import pyqtSlot
 import io
 
+input_move_list = []
+final_move_list = []
+final_evaluation_list = []
+text = ""
+input_text = "0"
+
 
 def writefile(board):  # Convert svg from chess library to a svg file
     boardsvg = chess.svg.board(board=board)
@@ -19,9 +25,9 @@ def writefile(board):  # Convert svg from chess library to a svg file
 
 
 def next_button_clicked(event):  # move the piece if the next button is pressed
-    global i
-    if i < len(move_list):  # if counter i is less than the length of move_list, move the piece and create the svg file
-        board.push(board.parse_san(move_list[i]))
+    global i, final_move_list
+    if i < len(final_move_list):  # if counter i is less than the length of move_list, move the piece and create the svg file
+        board.push(board.parse_san(final_move_list[i]))
         writefile(board)
         i += 1
         board_widget.load("Images/board.svg")  # Refresh the board widget
@@ -53,6 +59,7 @@ def generate_move_and_eval_list(game):  # generate a list of all moves
 
 def set_table_content(move_list, evaluation_list):  # set all the moves into the table
     count = 0
+    print(str(move_list) + " " + str(evaluation_list))
     for move, evaluation in zip(move_list, evaluation_list):
         move_item = QTableWidgetItem(str(move))
         tableWidget.setItem(count, 0, move_item)
@@ -64,43 +71,61 @@ def set_table_content(move_list, evaluation_list):  # set all the moves into the
 
 
 def create_game(text):
-    # Allow the user to enter the PGN notation
+    # Allow the user to enter the PGN notation and convert into game
     pgn = io.StringIO(text)
     game = chess.pgn.read_game(pgn)
     return game
 
 
-def game(text): # retrieve PGN notation and convert into move list and evaluation list
-    game = create_game(text)
 
-    board = game.board()
-    writefile(board)
-    input_move_list, input_evaluation_list = generate_move_and_eval_list(game)
-    print(str(input_move_list) + " " + str(input_evaluation_list))
-    return input_move_list, input_evaluation_list
+def input_game(text):  # retrieve PGN notation and convert into move list and evaluation list
+    global input_move_list, final_evaluation_list, final_move_list, input_text
+
+    while True:
+        try:
+            input_move_list.append(text)
+
+            input_text = " ".join(map(str, input_move_list))
+
+            game = create_game(input_text)
+
+            print(game)
+
+            board = game.board()
+            writefile(board)
+            final_move_list, final_evaluation_list = generate_move_and_eval_list(game)
+
+            set_table_content(final_move_list, final_evaluation_list)  # set table content using the move list generated
+
+            # print(str(final_move_list) + " " + str(final_evaluation_list))
+
+            text = "Legal move"
+            return text
+            break
+        except:
+            text = "Illegal move"
+            return text
 
 
 class App(QWidget):
 
     def __init__(self):
         super().__init__()
-
-        global text
-
         self.initUI()
 
     def initUI(self):
-        global i, board_widget, tableWidget, board, move_list, evaluation_list, input_move_list, input_evaluation_list
+        global i, board_widget, tableWidget, board, final_move_list, final_evaluation_list, input_text
         i = 0
-        text = "0"
         # pgn = open("database/lichess_db_standard_rated_2013-01.pgn")
         # game = chess.pgn.read_game(pgn)
 
-        game = create_game(text)
+        # input_text = "e4 e6"
+
+        game = create_game(input_text)
 
         board = game.board()
         writefile(board)
-        move_list, evaluation_list = generate_move_and_eval_list(game)
+        final_move_list, final_evaluation_list = generate_move_and_eval_list(game)
 
         main_layout = QVBoxLayout()  # set main layout to have a Vertical layout
         top_section = QHBoxLayout()  # set top_section to have a Horizontal layout
@@ -111,19 +136,20 @@ class App(QWidget):
         self.t1 = QLineEdit()  # create a textbox for user input
         self.b1 = QPushButton("Enter")  # create a button
         self.b1.clicked.connect(self.on_click)  # click button event
+        self.l2 = QLabel("")
 
         top_section.addWidget(self.l1)  # add the widgets to the top section
         top_section.addWidget(self.t1)
         top_section.addWidget(self.b1)
+        top_section.addWidget(self.l2)
 
         tableWidget = QTableWidget()  # initialise table widget
-        tableWidget.setRowCount(len(move_list))  # set the no of rows for the table
+        tableWidget.setRowCount(len(final_move_list))  # set the no of rows for the table
         tableWidget.setColumnCount(2)  # set the no of columns for the table
         tableWidget.setHorizontalHeaderLabels(["Chess Moves", "Evaluation"])  # set column name for the table
         tableWidget.setSizeAdjustPolicy(
             QAbstractScrollArea.AdjustToContents)  # set table size to fit the content perfectly
-        set_table_content(move_list, evaluation_list)  # set table content using the move list generated
-        # set_table_content(input_move_list, input_evaluation_list)
+        set_table_content(final_move_list, final_evaluation_list)  # set table content using the move list generated
         tableWidget.resizeColumnsToContents()
 
         board_widget = QtSvg.QSvgWidget('Images/Board.svg')  # initialise board widget
@@ -153,15 +179,32 @@ class App(QWidget):
         self.setWindowTitle("Chess Board")
         self.show()
 
+
     @pyqtSlot()
     def on_click(self):
         if not board.is_stalemate() and not board.is_insufficient_material() and not board.is_game_over():
             textboxValue = self.t1.text()
             # QMessageBox.question(self, 'Message', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
 
-            game(textboxValue)
+            text = input_game(textboxValue)
 
+            # set_table_content(final_move_list, final_evaluation_list)
+
+            self.l2.setText(text)
             self.t1.setText("")
+
+            # print(str(final_move_list) + " " + str(final_evaluation_list))
+            # count = 0
+            # for move, evaluation in zip(final_move_list, final_evaluation_list):
+            #     move_item = QTableWidgetItem(str(move))
+            #     self.tableWidget.setItem(count, 0, move_item)
+            #     eval_item = QTableWidgetItem(evaluation)
+            #     self.tableWidget.setItem(count, 1, eval_item)
+            #     move_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            #     eval_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            #     count += 1
+            #
+            # self.tableWidget.update()
         else:
             QMessageBox.question(self, 'Message', "Invalid input", QMessageBox.Ok, QMessageBox.Ok)
 

@@ -13,13 +13,14 @@ def engine_name(engine):
             return file + "komodo-11.01-64bit.exe"
         elif "fire" in engine:                          #Fire engine selected
             return file + "Fire_7.1_x64_popcnt.exe"
+        elif "leela" in engine:                         #Leela Zero engine selected
+            return file + "lc0/lc0.exe"
         else:
             return None #A suitable engine could not be found
     except: #Engine was not found
         return None
 
-def evaluate(boardFEN, turn='0', time=5000, enginename="stockfish"):   #Evaluates the board state, default White
-    #'turn' determines whose turn it is (default: 0 -> White)
+def evaluate(boardFEN, time=5000, enginename="stockfish"):   #Evaluates the board state, default White
     #'time' determines the time engine spends thinking in milliseconds (default: 500ms = 0.5s)
     #'engine' determines the name of engine to be used (default: 100ms)
 
@@ -27,20 +28,17 @@ def evaluate(boardFEN, turn='0', time=5000, enginename="stockfish"):   #Evaluate
     #The lower the return value the better it is for Black
     #Positive means good for White
     #Negative means good for Black
-    if turn == 0:                       #White's turn
-        playerturn = chess.WHITE
-    elif turn == 1:                     #Black's turn
-        playerturn = chess.BLACK
-    else: #If turn is somehow not 0 or 1, assume White's turn
-        return evaluate(boardFEN, 0)
 
     time = time/1000                    #Calculate time in seconds
     board = chess.Board(boardFEN)
-    
-    if engine_name(enginename) is None: #Name of the engine was undefined
-        return False #Returns False when error
+    enginefile = engine_name(enginename)
+    if enginefile is None: #Name of the engine was undefined
+        return False #Returns False whe error
     try:
-        engine = chess.engine.SimpleEngine.popen_uci(engine_name(enginename)) #Opens the engine
+        engine = chess.engine.SimpleEngine.popen_uci(enginefile) #Opens the engine
+        if "stockfish" in enginefile:
+            engine.configure({"use NNUE": True}) #Use Stockfish neural network
+        
         info = engine.analyse(board, chess.engine.Limit(time=time)) #Sets the time given to engine for evaluation
         
     except:
@@ -53,7 +51,7 @@ def evaluate(boardFEN, turn='0', time=5000, enginename="stockfish"):   #Evaluate
     if(info["score"].is_mate()):                #Check if engine found mate
         centipawn = info["score"]
         engine.quit()
-        return centipawn                    #If mate is found, returns the game as well
+        return centipawn                
     else: #No mate found
         centipawn = (info["score"].white().score())/100 #To get the centipawn value
     engine.quit()
@@ -93,7 +91,6 @@ def find_mate(boardFEN): #Should only be used if mate is possible
 #print(find_mate(board2))
 #board3 = "5r2/8/1R6/ppk3p1/2N3P1/P4b2/1K6/5B2 w - - 0 1"            #Super hard puzzle, correct move is Rxb5+ !!
 #print(evaluate(board3))
-#print(get_mate(board3))
 #board4 = "5rk1/pp1b2p1/4p2p/3p2p1/3P4/1P2P3/P3nPPP/R1R3K1 w - - 2 25"
 #print(evaluate(board4))
 #board5 = "r2q1rk1/pppb1ppB/2nb1n2/3p2B1/3P4/2N1P3/PPQ2PPP/R3K1NR b KQ - 0 9"
