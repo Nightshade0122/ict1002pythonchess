@@ -162,10 +162,12 @@ class App(QWidget):
             QAbstractScrollArea.AdjustToContents)  # set table size to fit the content perfectly
         set_table_content(final_move_list, final_evaluation_list)  # set table content using the move list generated
         tableWidget.resizeColumnsToContents()
+        tableWidget.hide()
 
         board_widget = QtSvg.QSvgWidget('Images/Board.svg')  # initialise board widget
         board_widget.setFixedWidth(460)
         board_widget.setFixedHeight(460)
+        board_widget.hide()
 
         upper_section.addWidget(board_widget)  # add the widgets to the upper section
         upper_section.addWidget(tableWidget)
@@ -174,10 +176,12 @@ class App(QWidget):
         self.previous_button.setToolTip("Previous move")
         self.previous_button.setIcon(QtGui.QIcon("Images/left-arrow.png"))
         self.previous_button.clicked.connect(previous_button_clicked)  # create a event handler for the previous button
+        self.previous_button.hide()
         self.next_button = QPushButton()  # create a push button for next move
         self.next_button.setToolTip("Next move")
         self.next_button.setIcon(QtGui.QIcon("Images/right-arrow.png"))
         self.next_button.clicked.connect(next_button_clicked)  # create a event handler for the next button
+        self.next_button.hide()
 
         lower_section.addWidget(self.previous_button)  # add the previous button to the lower section
         lower_section.addWidget(self.next_button)  # add the next button to the lower section
@@ -204,6 +208,8 @@ class App(QWidget):
         self.setLayout(main_layout)  # set the main layout for the main widget
 
         self.setWindowTitle("Chess Board")  # set title of the window
+        self.setFixedWidth(750)
+        self.setFixedHeight(750)
         self.show()
 
     @pyqtSlot()
@@ -240,8 +246,8 @@ class App(QWidget):
             self.previous_button2.show()
             self.next_button2.show()
 
-            tableWidget.hide()  # hide tableWidget
-            board_widget.hide()  # hide board_widget
+            # tableWidget.hide()  # hide tableWidget
+            # board_widget.hide()  # hide board_widget
             self.next_button.hide()  # hide next button
             self.previous_button.hide()  # hide previous button
         else:
