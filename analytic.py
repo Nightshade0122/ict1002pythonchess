@@ -5,15 +5,15 @@ import matplotlib.pyplot as plt
 import search
 import statistics
 
-def getlist(pgn):
-    '''Read one pgn file only'''
-    pgnlist=[]
-    while True:
-        game = chess.pgn.read_game(pgn)
-        if game is not None:
-            pgnlist.append(game)
-        else:
-            break
+def getlist(databaselist):
+    pgnlist = []
+    for i in range(len(databaselist)):
+        while True:
+            game = chess.pgn.read_game(databaselist[i])
+            if game is not None:
+                pgnlist.append(game)
+            else:
+                break
     return pgnlist
 
 def getMovesCount(pgnlist):
@@ -164,12 +164,12 @@ def barGraph(x,col=5,title="",x_Label="",y_Label=""):
 def datacount(data):
     '''Validation of the length input by user'''
     while True:
-        count = int(input("Please enter the no. of data to be displayed: "))
+        count = int(input("Please enter the no. of data to be displayed (e.g. 2 - 5): "))
         if count>1 and count < len(data):
             break
         else:
             print("Please enter a valid length")
-            count = int(input("Please enter the no. of data to be displayed"))
+            count = int(input("Please enter the no. of data to be displayed (e.g. 2 - 5): "))
     return count
             
     
@@ -179,9 +179,9 @@ def graphTypes(pgnlist):
     '''Selection of graphs'''
     if len(pgnlist) != 0:
         while True:
-            print("\n------------------------------Welcom to Analytics--------------------------------")
+            print("\n------------------------------Welcome to Analytics--------------------------------")
             print("\nEnter 1 to display bar chart of Top Opening used")
-            print("Enter 2 to display bar chart of  Termination Types used")
+            print("Enter 2 to display bar chart of Termination Types used")
             print("Enter 3 to display bar chart of Most common Time Control used")
             print("Enter 4 to display chart of Winning rate of Black and White")
             print("Enter 5 to display chart Mean, Median and Mode of the no. of Moves")           
@@ -225,29 +225,4 @@ def graphTypes(pgnlist):
 #pgnlist=readfile(pgn)
 
 #graphTypes(pgnlist)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
 
