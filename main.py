@@ -120,7 +120,7 @@ def main():
     while True:
         print()
         print("Please select from the options:")
-        print("1. Search \n2. Create game \n3. Analytics \n4. Exit")
+        print("1. Search \n2. Create game \n3. Analytics \n4. Display game\n5. Exit")
         enterinput = input()
         if enterinput in "1":             #Search option selected
             searchcriteria = search.enter_search()      #Asks user for search criteria
@@ -131,13 +131,6 @@ def main():
                 pgnresult += search.query_database(databaselist[i],searchcriteria)  #Store filtered results
                 if showfirstgame:              #Show an example game found in the GUI
                     showfirstgame = False
-                    try:
-                        try:
-                            gui(pgnresult[0])
-                        except:     #If GUI fails to display, use database_games to show every game in command-line
-                            database_games(pgnresult[0], showpgn=False, cmdboard=True)
-                    except IndexError:
-                        print("Search found no games within the database!")
             break
         elif enterinput in "2": #Create game
             try:
@@ -149,6 +142,14 @@ def main():
             analytic.graphTypes(pgnlist)
             break
         elif enterinput in "4":
+            try:
+                try:
+                    gui(pgnresult[0])
+                except:     #If GUI fails to display, use database_games to show every game in command-line
+                    database_games(pgnresult[0], showpgn=False, cmdboard=True)
+            except IndexError:
+                print("Search found no games within the database!")
+        elif enterinput in "5":
             print("Exiting program")
             break
         else:
