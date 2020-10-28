@@ -91,8 +91,6 @@ def input_game(text):  # retrieve PGN notation and convert into move list and ev
 
             input_text1 = str(game.mainline_moves())
 
-            print(str(input_text1))
-
             board = game.board()
             writefile(board)
             final_move_list, final_evaluation_list = generate_move_and_eval_list(game)
