@@ -34,7 +34,7 @@ def database_games(pgn, showpgn=False, cmdboard=False):     #Loop through all th
                 total = total + 1
             else:
                 break                           #If no more games are found, break the loop and return
-        return total                            #Return total number of games found           
+        return total                            #Return total number of games found
     except:
         return 0                                #No games found due to an error
 
@@ -53,13 +53,13 @@ def command_line_board(game, FEN=False):        #Showing the game moves in comma
                 print("%d :... " %(counter/2), end ='')
                 print("%s" %board.san(move)) #To signify that it is Black's and convert to PGN notation
                 counter = counter + 1
-            
+
             board.push(move)                    #Make next move in game
             if FEN:
                 print(board.fen())              #Show FEN notations with the board
             #Show board state
             print("---------------")
-            print(board)                    
+            print(board)
             print("---------------")
             if input() == "":                   #Enter to show next move and board state
                 continue
@@ -71,11 +71,11 @@ def main():
     chessdatabase = "database"                  #Name of directory containing all databases
     databaselist = read_database(chessdatabase) #Creates list of I/O wrappers for all databases listed
     print("Initialization complete!")
-    
+
     while True:
         print()
         print("Please select from the options:")
-        print("search, creategame, analytics, machinelearning")
+        print("1. search \n2. create game \n3. analytics \n4. machinelearning\n")
         enterinput = input()
         if enterinput in "search":             #Search option selected
             searchcriteria = search.enter_search()      #Asks user for search criteria
@@ -88,7 +88,7 @@ def main():
                     showfirstgame = False
                     try:
                         try:
-                            gui(pgnresult[0])   
+                            gui(pgnresult[0])
                         except:     #If GUI fails to display, use database_games to show every game in command-line
                             database_games(pgnresult[0], showpgn=False, cmdboard=True)
                     except IndexError:
@@ -105,5 +105,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
