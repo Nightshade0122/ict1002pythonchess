@@ -7,7 +7,7 @@ import chess.svg
 import evaluate
 import search
 import gui
-#import analytic
+import analytic
 
 def read_database(database):                    #Read from a database directory and return the PGN
     pgn = []
@@ -95,7 +95,8 @@ def main():
                         print("Search found no games within the database!")
             break
         elif enterinput in "analytics":
-            analytics.graphTypes(pgnresult)
+            pgnlist = analytic.getlist(databaselist)
+            analytics.graphTypes(pgnlist)
             break
         else:
             print("Invalid input")
