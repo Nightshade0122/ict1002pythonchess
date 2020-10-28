@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import search
 import statistics
 
-def list(pgn):
+def getlist(pgn):
     '''Read one pgn file only'''
     pgnlist=[]
     while True:
