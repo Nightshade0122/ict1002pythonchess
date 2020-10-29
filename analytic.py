@@ -44,7 +44,6 @@ def getMeanMedianMode(move,movelist):
     stat["Mean"] = mean
     stat["Median"] = median
     stat["Mode"] = mode
-    stat["Most Moves"] = sort[0][0]
     return stat
    
         
