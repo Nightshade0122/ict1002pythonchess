@@ -19,8 +19,11 @@ def getlist(databaselist):
 def getMovesCount(pgnlist):
     '''Get the chess moves in each game'''
     fulllist=[]
-    for i in pgnlist: 
-        fulllist.append(list(i.mainline_moves())) #Append move into a list
+    for i in pgnlist:
+        try: #skip if header not found
+            fulllist.append(list(i.mainline_moves())) #Append move into a list
+        except:
+            continue
     move ={}
     movelist =[]
     for i in fulllist:
@@ -49,11 +52,14 @@ def getOpening(pgnlist):
     '''Get the opening used in all the games'''
     openingUsed = []
     for i in pgnlist:
-       openingUsed.append(i.headers["Opening"]) #Append opening from each game
+        try: #skip if header not found
+            openingUsed.append(i.headers["Opening"]) #Append opening from each game
+        except:
+            continue
     opening ={}
     list1=[]
     for i in openingUsed: #Append data in to list
-        try:
+        try: #skip if header not found
             a= i.split(":") #Only retrieve the word bef : eg. benoni Defense : Advance Variation
             list1.append(a[0])
         except IndexError:
@@ -67,7 +73,10 @@ def getTimeControl(pgnlist):
     timelist=[]
     timeControl={}
     for i in pgnlist:
-        timelist.append(i.headers["TimeControl"]) #Append time control to list
+        try: #skip if header not found
+            timelist.append(i.headers["TimeControl"]) #Append time control to list
+        except:
+            continue
     for i in timelist:
         timeControl[i] = timelist.count(i) #Append data to dictionary with value of its count.
     return timeControl
@@ -78,7 +87,10 @@ def terminationType(pgnlist):
     termination ={}
     list1 =[]
     for i in pgnlist:
-        list1.append(i.headers["Termination"])
+        try: #skip if header not found
+            list1.append(i.headers["Termination"])
+        except:
+            continue
     for i in list1:
         termination[i] = list1.count(i)
     return termination
@@ -91,13 +103,16 @@ def winRateWhiteBlack(pgnlist):
     white,black,draw =0,0,0
     count =0
     for i in pgnlist:
-        count += 1
-        if i.headers["Result"] == "1-0":
-            white+=1
-        elif i.headers["Result"] == "0-1":
-            black+=1
-        else:
-            draw+=1
+        try:
+            count += 1
+            if i.headers["Result"] == "1-0":
+                white+=1
+            elif i.headers["Result"] == "0-1":
+                black+=1
+            else:
+                draw+=1
+        except:
+                continue
     winrate["White Wins"] = white/count*100
     winrate["Black Wins"] = black/count*100
     winrate["Draw"] =draw/count*100
