@@ -221,8 +221,8 @@ def graphTypes(pgnlist):
 
 
 
-#pgn = open("database/small.pgn")
-#pgnlist=readfile(pgn)
+#pgn = open("database/900game.pgn")
+#pgnlist=getlist(pgn)
 
 #graphTypes(pgnlist)
 
