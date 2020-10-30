@@ -147,7 +147,7 @@ def main():
             try:
                 try:
                     game = chess.pgn.read_game(databaselist[0])
-                    gui(game)
+                    gui.gui(game)
                 except:     #If GUI fails to display, use database_games to show every game in command-line
                     database_games(game, showpgn=False, cmdboard=True)
             except IndexError:
