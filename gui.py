@@ -109,6 +109,6 @@ def gui(game):
     sys.exit(app.exec_())
 
 
-#pgn = open("lichess_db_standard_rated_2013-01.pgn")
+#pgn = open("database/game.pgn")
 #game = chess.pgn.read_game(pgn)
 #gui(game)
