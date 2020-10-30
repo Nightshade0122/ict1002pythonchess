@@ -65,7 +65,7 @@ def gui(game):
     i = 0
     board = game.board()
     writefile(board)
-    print("Loading... evaluation may take about 1-2mins.")
+    print("Loading... evaluation may take about 1-2 mins.")
     move_list, evaluation_list = generate_move_and_eval_list(game)
 
     app = QApplication(sys.argv)    #initialise the pyqt application
