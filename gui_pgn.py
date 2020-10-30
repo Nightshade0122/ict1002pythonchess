@@ -276,9 +276,7 @@ class App(QWidget):
         else:
             pass
 
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)  # initialise the pyqt application
-    app.setStyleSheet(qdarkstyle.load_stylesheet())  # load third party dark theme
-    ex = App()
-    sys.exit(app.exec_())
+app = QApplication(sys.argv)  # initialise the pyqt application
+app.setStyleSheet(qdarkstyle.load_stylesheet())  # load third party dark theme
+ex = App()
+sys.exit(app.exec_())
